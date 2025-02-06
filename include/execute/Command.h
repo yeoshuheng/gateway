@@ -8,10 +8,11 @@
 #include <string>
 #include <random>
 #include "ConnectionPool.h"
+#include "Order.h"
 
 class Command {
     private:
-      const std::string order;
+      const Order order;
 
       ConnectionPool pool; // pool cannot be const because we acquire & release -> modifications
 
@@ -22,7 +23,7 @@ class Command {
       int getQuantum();
 
     public:
-      Command(const std::string &order, ConnectionPool &pool);
+      Command(const Order &order, ConnectionPool &pool);
       void execute();
 };
 

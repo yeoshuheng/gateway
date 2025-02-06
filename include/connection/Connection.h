@@ -12,7 +12,9 @@
 #include "logger.h"
 #include <string>
 #include <iostream>
+#include "json.hpp"
 
+typedef nlohmann::json json;
 typedef asio::ip::tcp::resolver resolver;
 typedef websocket::stream<tcp::socket> socket;
 
@@ -35,7 +37,7 @@ class Connection {
     bool isConnected();
     void close();
 
-    void send(const std::string &message);
+    void send(const json &message);
     std::string recieve();
 }
 

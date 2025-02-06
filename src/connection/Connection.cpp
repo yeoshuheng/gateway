@@ -11,6 +11,9 @@
 
 #include "Connection.h"
 #include "Logger.h"
+#include "json.hpp"
+
+typedef nlohmann::json json;
 
 Connection::Connection(boost::asio::io_context& ctx,
                        const std::string &host_,
@@ -30,11 +33,12 @@ bool isConnected() {
     return c_socket.next_layer().is_open();
 }
 
-void Connection::send(const std::string &message) {
+void Connection::send(const json &message) {
     if (!isConnected()) {connect();}
     try {
-      c_socket.write(asio::buffer(message));
-      logger.log(INFO, std::format("[Connection] Sending message %s", message));
+      std::string message_str = message.dump();
+      c_socket.write(asio::buffer(message_str));
+      logger.log(INFO, std::format("[Connection] Sending message %s", message_str));
     } catch (const std::exception &e) {
       logger.log(ERROR, std::format("[Connection] Error Sending Message: %s | Error code: %s",
                                     e.what(), e.code()));

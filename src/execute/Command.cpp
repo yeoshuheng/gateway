@@ -6,8 +6,11 @@
 #include <chrono>
 #include <random>
 
+#include "json.hpp"
 #include "Command.h"
 #include "Connection.h"
+
+typedef nlohmann::json json;
 
 int Command::getQuantum() {
   return dist(gen);
@@ -17,7 +20,8 @@ void Command::execute() {
     while (true) {
       std::shared_ptr<Connection> conn = pool.acquire();
       if (conn) {
-        conn->send(order);
+        json order_json = order.toJson();
+        conn->send(order_json);
         pool.release(conn);
         return; // acquired connection & release connection
       } else {
